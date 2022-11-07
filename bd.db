@@ -1,0 +1,100 @@
+CREATE TABLE endereco(
+	idenderecos integer PRIMARY KEY,
+	logradouro varchar(100),
+	numero integer,
+	complemento varchar(30),
+	bairro varchar(50),
+	cep integer,
+	cidade varchar(100),
+	sigla_estado varchar(2)
+);
+
+
+CREATE TABLE forma_pagamento(
+	id_forma_pag integer PRIMARY KEY,
+	descricao varchar(50)
+
+);
+
+CREATE TABLE status_pedido(
+	id_status integer PRIMARY KEY,
+	descricao varchar(50)
+
+);
+
+CREATE TABLE tipo_mercadoria(
+	id_tipo_mercadoria integer PRIMARY KEY,
+	descricao varchar (100)
+
+);
+
+CREATE TABLE cliente(
+	email varchar(50) PRIMARY KEY,
+	nome varchar(50),
+	data_nascimento date,
+	fone_residual integer,
+	fone_celular integer,
+	cpf integer,
+	senha varchar(8),
+	endereco integer,
+	FOREIGN KEY (endereco) REFERENCES endereco(idenderecos)
+	
+);
+CREATE TABLE loja(
+	numero_loja integer PRIMARY KEY,
+	endereco integer,
+	nome varchar (100),
+	telefone_contato integer,
+	FOREIGN KEY (endereco) REFERENCES endereco(idenderecos)
+
+);
+
+CREATE TABLE mercadoria(
+	codigo integer PRIMARY KEY,
+	descricao varchar(300),
+	preco_venda float,
+	tipo_mercadoria integer,
+	FOREIGN KEY (tipo_mercadoria) REFERENCES tipo_mercadoria(id_tipo_mercadoria)
+
+);
+
+CREATE TABLE pedidos(
+	numero_pedidos integer PRIMARY KEY,
+	cliente_email varchar(50),
+	endereco_entrega integer,
+	forma_pagamento integer,
+	status_pedido integer,
+	data_expedicao date,
+	valor_total float,
+	FOREIGN KEY (cliente_email) REFERENCES cliente(email),
+	FOREIGN KEY (endereco_entrega) REFERENCES endereco(idenderecos),
+	FOREIGN KEY (forma_pagamento) REFERENCES forma_pagamento(id_forma_pag),
+	FOREIGN KEY (status_pedido) REFERENCES status_pedido(id_status)
+
+);
+CREATE TABLE loja_mercadoria(
+	loja integer ,
+	mercadoria integer ,
+	quantidade integer,
+	PRIMARY KEY(loja,mercadoria),
+	FOREIGN KEY (loja) REFERENCES loja(numero_loja),
+	FOREIGN KEY (mercadoria) REFERENCES pedidos_mercadoria(codigo)
+	
+
+);
+CREATE TABLE pedidos_mercadoria(
+	pedido integer,
+	loja integer,
+	mercadoria integer,
+	status integer,
+	quantidade_pedida integer,
+	data_entrega date,
+	valor_unitario float,
+	PRIMARY KEY(pedido,loja,mercadoria),
+	FOREIGN KEY (pedido) REFERENCES pedidos(numero_pedidos),
+	FOREIGN KEY (loja) REFERENCES loja_mercadoria(loja),
+	FOREIGN KEY (mercadoria) REFERENCES loja_mercadoria(mercadoria)
+	
+	
+	
+);
